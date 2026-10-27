@@ -71,7 +71,7 @@ _span_name_keyed_attr["embeddings"]        := "gen_ai.request.model"
 _span_name_keyed_attr["execute_tool"]      := "gen_ai.tool.name"
 _span_name_keyed_attr["invoke_agent"]      := "gen_ai.agent.name"
 _span_name_keyed_attr["create_agent"]      := "gen_ai.agent.name"
-_span_name_keyed_attr["invoke_workflow"]   := "gen_ai.workflow.name"
+_span_name_keyed_attr["invoke_workflow"]   := "gen_ai.agent.name"
 _span_name_keyed_attr["retrieval"]         := "gen_ai.data_source.id"
 
 # Span name SHOULD be `{op}` (when the keyed attribute is absent) or
