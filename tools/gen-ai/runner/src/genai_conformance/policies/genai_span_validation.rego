@@ -248,6 +248,9 @@ deny contains _span_finding(
 	input.sample.span
 	op := _attr_value(input.sample.span, "gen_ai.operation.name")
 	not _known_operation_names[op]
+	# invoke_{framework_entrypoint} (e.g. invoke_runner) is a documented pattern,
+	# not an enum value (semantic-conventions-genai#571).
+	not startswith(op, "invoke_")
 }
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
