@@ -105,14 +105,14 @@ def test_span_kind_tells_the_two_invoke_agent_types_apart(
     }
 
 
-def test_invocation_internal_covers_agent_workflow_and_runner() -> None:
-    """A registry with gen_ai.invocation.internal classifies in-process
-    invocations there, whatever the pinned registry declares."""
+def test_invoke_agent_internal_covers_agent_workflow_and_runner() -> None:
+    """Without gen_ai.invoke_workflow.internal, every in-process invocation
+    is a gen_ai.invoke_agent.internal span."""
     classify_span = DOMAIN.classifier(
         {
             "spans": {
                 "gen_ai.invoke_agent.client": {"kind": "client"},
-                "gen_ai.invocation.internal": {"kind": "internal"},
+                "gen_ai.invoke_agent.internal": {"kind": "internal"},
             }
         }
     )
@@ -120,10 +120,24 @@ def test_invocation_internal_covers_agent_workflow_and_runner() -> None:
     for operation in ("invoke_agent", "invoke_workflow", "invoke_runner"):
         assert classify_span(
             "", "internal", {"gen_ai.operation.name": operation}
-        ) == {"gen_ai.invocation.internal"}
+        ) == {"gen_ai.invoke_agent.internal"}
+
+
+def test_a_registry_with_invoke_workflow_internal_keeps_workflows_there() -> (
+    None
+):
+    classify_span = DOMAIN.classifier(
+        {
+            "spans": {
+                "gen_ai.invoke_agent.internal": {"kind": "internal"},
+                "gen_ai.invoke_workflow.internal": {"kind": "internal"},
+            }
+        }
+    )
+
     assert classify_span(
-        "", "client", {"gen_ai.operation.name": "invoke_agent"}
-    ) == {"gen_ai.invoke_agent.client"}
+        "", "internal", {"gen_ai.operation.name": "invoke_workflow"}
+    ) == {"gen_ai.invoke_workflow.internal"}
 
 
 def test_a_span_of_no_known_type_is_classified_as_nothing(
